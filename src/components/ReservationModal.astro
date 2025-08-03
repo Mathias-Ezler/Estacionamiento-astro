@@ -176,7 +176,7 @@
     reserveBtn.addEventListener('click', () => {
       if (selectedSpace && selectedDays) {
         const message = `Hola! Quiero reservar el espacio de estacionamiento #${selectedSpace} por ${selectedDays} día${selectedDays > 1 ? 's' : ''} (Total: $${prices[selectedDays]})`;
-        const whatsappUrl = `https://wa.me/1234567890?text=${encodeURIComponent(message)}`;
+        const whatsappUrl = `https://wa.me/+595982473466?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
       }
     });
