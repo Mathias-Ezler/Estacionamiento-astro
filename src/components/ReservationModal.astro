@@ -1,0 +1,205 @@
+---
+// src/components/ReservationModal.astro
+---
+
+<div id="reservationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+  <div class="bg-gray-800 rounded-lg shadow-2xl max-w-md w-full border border-gray-700 transform transition-all duration-300">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-700">
+      <h3 class="text-xl font-bold text-white">
+        Reservar Espacio <span id="modalSpaceNumber" class="text-blue-400">#</span>
+      </h3>
+      <button id="closeModal" class="text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Content -->
+    <div class="p-6">
+      <!-- Descripción del espacio -->
+      <div class="mb-6">
+        <h4 class="text-lg font-semibold text-gray-200 mb-2">Descripción del Espacio</h4>
+        <div class="bg-gray-700 p-4 rounded-lg">
+          <p class="text-gray-300 text-sm mb-2">
+            <span class="font-semibold">Ubicación:</span> <span id="spaceLocation"></span>
+          </p>
+          <p class="text-gray-300 text-sm mb-2">
+            <span class="font-semibold">Tipo:</span> Espacio estándar para vehículo
+          </p>
+          <p class="text-gray-300 text-sm">
+            <span class="font-semibold">Características:</span> Techado, seguro, acceso 24/7
+          </p>
+        </div>
+      </div>
+      
+      <!-- Selección de días -->
+      <div class="mb-6">
+        <h4 class="text-lg font-semibold text-gray-200 mb-3">Selecciona los días</h4>
+        <div class="grid grid-cols-5 gap-2">
+          {[1, 2, 3, 4, 5].map(day => (
+            <button 
+              class="day-btn bg-gray-700 hover:bg-blue-600 text-white py-2 px-3 rounded-lg transition-all duration-200 border border-gray-600 hover:border-blue-500 text-sm font-medium"
+              data-days={day}
+            >
+              {day} día{day > 1 ? 's' : ''}
+            </button>
+          ))}
+        </div>
+        <p class="text-gray-400 text-xs mt-2">Selecciona la cantidad de días que necesitas el espacio</p>
+      </div>
+      
+      <!-- Precios y combos -->
+      <div class="mb-6">
+        <h4 class="text-lg font-semibold text-gray-200 mb-3">Precios</h4>
+        <div class="space-y-2">
+          <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+            <span class="text-gray-300">1 día</span>
+            <span class="text-green-400 font-bold">$50</span>
+          </div>
+          <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+            <span class="text-gray-300">2 días</span>
+            <span class="text-green-400 font-bold">$90 <span class="text-xs text-gray-400">(Ahorra $10)</span></span>
+          </div>
+          <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+            <span class="text-gray-300">3 días</span>
+            <span class="text-green-400 font-bold">$120 <span class="text-xs text-gray-400">(Ahorra $30)</span></span>
+          </div>
+          <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
+            <span class="text-gray-300">4 días</span>
+            <span class="text-green-400 font-bold">$150 <span class="text-xs text-gray-400">(Ahorra $50)</span></span>
+          </div>
+          <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-700 to-blue-600 rounded-lg border border-blue-500">
+            <span class="text-white font-semibold">5 días (Combo Semanal)</span>
+            <span class="text-yellow-300 font-bold">$175 <span class="text-xs text-blue-200">(Ahorra $75)</span></span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Total seleccionado -->
+      <div class="mb-6 p-4 bg-gradient-to-r from-green-700 to-green-600 rounded-lg border border-green-500">
+        <div class="flex justify-between items-center">
+          <span class="text-white font-semibold">Total seleccionado:</span>
+          <span id="totalPrice" class="text-yellow-300 font-bold text-lg">$0</span>
+        </div>
+        <p id="selectedDaysText" class="text-green-100 text-sm mt-1">Selecciona los días para ver el precio</p>
+      </div>
+      
+      <!-- Botón de reservar -->
+      <button 
+        id="reserveBtn" 
+        class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+        disabled
+      >
+        Reservar por WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedSpace = null;
+  let selectedDays = null;
+  
+  const prices = {
+    1: 50,
+    2: 90,
+    3: 120,
+    4: 150,
+    5: 175
+  };
+  
+  const locations = {
+    1: "Fila superior - Izquierda", 2: "Fila superior - Centro izquierda", 3: "Fila superior - Centro",
+    4: "Fila superior - Centro derecha", 5: "Fila superior - Derecha", 6: "Fila superior - Extremo derecha",
+    7: "Lateral izquierdo - Superior", 8: "Lateral izquierdo - Centro superior", 9: "Lateral izquierdo - Centro",
+    10: "Lateral izquierdo - Centro inferior", 11: "Lateral izquierdo - Inferior", 12: "Lateral izquierdo - Extremo inferior",
+    13: "Lateral derecho - Superior", 14: "Lateral derecho - Centro superior", 15: "Lateral derecho - Centro",
+    16: "Lateral derecho - Centro inferior", 17: "Lateral derecho - Inferior", 18: "Lateral derecho - Extremo inferior",
+    19: "Fila inferior - Izquierda", 20: "Fila inferior - Centro izquierda", 21: "Fila inferior - Centro",
+    22: "Fila inferior - Centro derecha", 23: "Fila inferior - Derecha", 24: "Fila inferior - Extremo derecha"
+  };
+  
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('reservationModal');
+    const closeBtn = document.getElementById('closeModal');
+    const dayButtons = document.querySelectorAll('.day-btn');
+    const reserveBtn = document.getElementById('reserveBtn');
+    const totalPrice = document.getElementById('totalPrice');
+    const selectedDaysText = document.getElementById('selectedDaysText');
+    const modalSpaceNumber = document.getElementById('modalSpaceNumber');
+    const spaceLocation = document.getElementById('spaceLocation');
+    
+    // Escuchar evento personalizado para abrir modal
+    window.addEventListener('openReservationModal', (e) => {
+      selectedSpace = e.detail.spaceNumber;
+      modalSpaceNumber.textContent = selectedSpace;
+      spaceLocation.textContent = locations[selectedSpace];
+      modal.classList.remove('hidden');
+    });
+    
+    // Cerrar modal
+    closeBtn.addEventListener('click', () => {
+      modal.classList.add('hidden');
+      resetModal();
+    });
+    
+    // Cerrar modal al hacer click fuera
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+        resetModal();
+      }
+    });
+    
+    // Selección de días
+    dayButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remover selección anterior
+        dayButtons.forEach(b => {
+          b.classList.remove('bg-blue-600', 'border-blue-500');
+          b.classList.add('bg-gray-700', 'border-gray-600');
+        });
+        
+        // Agregar selección actual
+        btn.classList.remove('bg-gray-700', 'border-gray-600');
+        btn.classList.add('bg-blue-600', 'border-blue-500');
+        
+        selectedDays = parseInt(btn.getAttribute('data-days'));
+        updatePrice();
+        reserveBtn.disabled = false;
+      });
+    });
+    
+    // Botón de reservar
+    reserveBtn.addEventListener('click', () => {
+      if (selectedSpace && selectedDays) {
+        const message = `Hola! Quiero reservar el espacio de estacionamiento #${selectedSpace} por ${selectedDays} día${selectedDays > 1 ? 's' : ''} (Total: $${prices[selectedDays]})`;
+        const whatsappUrl = `https://wa.me/1234567890?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+      }
+    });
+    
+    function updatePrice() {
+      if (selectedDays) {
+        totalPrice.textContent = `$${prices[selectedDays]}`;
+        selectedDaysText.textContent = `${selectedDays} día${selectedDays > 1 ? 's' : ''} seleccionado${selectedDays > 1 ? 's' : ''}`;
+      }
+    }
+    
+    function resetModal() {
+      selectedSpace = null;
+      selectedDays = null;
+      reserveBtn.disabled = true;
+      totalPrice.textContent = '$0';
+      selectedDaysText.textContent = 'Selecciona los días para ver el precio';
+      
+      // Reset day buttons
+      dayButtons.forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'border-blue-500');
+        btn.classList.add('bg-gray-700', 'border-gray-600');
+      });
+    }
+  });
+</script>
