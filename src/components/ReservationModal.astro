@@ -1,114 +1,113 @@
 ---
 // src/components/ReservationModal.astro
 ---
-
-<div id="reservationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
-  <div class="bg-gray-800 rounded-lg shadow-2xl max-w-md w-full border border-gray-700 transform transition-all duration-300">
+<div id="reservationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-0 sm:p-4 z-50 hidden">
+  <div class="bg-gray-900 rounded-t-2xl sm:rounded-lg shadow-2xl w-full h-full sm:h-auto sm:max-w-lg md:max-w-xl border border-gray-700 transform transition-all duration-300 scale-95 opacity-0 modal-content flex flex-col">
     <!-- Header -->
-    <div class="flex items-center justify-between p-6 border-b border-gray-700">
-      <h3 class="text-xl font-bold text-white">
-        Reservar Espacio <span id="modalSpaceNumber" class="text-blue-400">#</span>
+    <div class="flex items-center justify-between p-4 sm:p-6 bg-gradient-to-r from-green-700 to-green-600 rounded-t-2xl">
+      <h3 class="text-lg sm:text-2xl font-bold text-white">
+        Reservar Espacio <span id="modalSpaceNumber" class="text-yellow-300">#</span>
       </h3>
-      <button id="closeModal" class="text-gray-400 hover:text-white transition-colors">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <button id="closeModal" class="text-gray-200 hover:text-white transition-colors">
+        <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </button>
     </div>
-    
-    <!-- Content -->
-    <div class="p-6">
-      <!-- Descripción del espacio -->
-      <div class="mb-6">
-        <h4 class="text-lg font-semibold text-gray-200 mb-2">Descripción del Espacio</h4>
-        <div class="bg-gray-700 p-4 rounded-lg">
-          <p class="text-gray-300 text-sm mb-2">
-            <span class="font-semibold">Ubicación:</span> <span id="spaceLocation"></span>
-          </p>
-          <p class="text-gray-300 text-sm mb-2">
-            <span class="font-semibold">Tipo:</span> Espacio estándar para vehículo
-          </p>
-          <p class="text-gray-300 text-sm">
-            <span class="font-semibold">Características:</span> Techado, seguro, acceso 24/7
-          </p>
+
+    <!-- Contenido con scroll -->
+    <div class="p-4 sm:p-6 space-y-6 text-sm sm:text-base overflow-y-auto flex-1">
+      <!-- Descripción -->
+      <div>
+        <h4 class="text-base sm:text-lg font-semibold text-gray-200 mb-3">Descripción del Espacio</h4>
+        <div class="bg-gray-800 p-3 sm:p-4 rounded-lg shadow-inner text-xs sm:text-sm">
+          <p class="text-gray-300 mb-2"><span class="font-semibold">Ubicación:</span> <span id="spaceLocation"></span></p>
+          <p class="text-gray-300 mb-2"><span class="font-semibold">Tipo:</span> Espacio estándar para vehículo</p>
+          <p class="text-gray-300"><span class="font-semibold">Características:</span> Techado, seguro, acceso 24/7</p>
         </div>
       </div>
-      
-      <!-- Selección de días -->
-      <div class="mb-6">
-        <h4 class="text-lg font-semibold text-gray-200 mb-3">Selecciona los días</h4>
-        <div class="grid grid-cols-5 gap-2">
+
+      <!-- Días -->
+      <div>
+        <h4 class="text-base sm:text-lg font-semibold text-gray-200 mb-3">Selecciona los días</h4>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
           {[1, 2, 3, 4, 5].map(day => (
             <button 
-              class="day-btn bg-gray-700 hover:bg-blue-600 text-white py-2 px-3 rounded-lg transition-all duration-200 border border-gray-600 hover:border-blue-500 text-sm font-medium"
+              class="day-btn bg-gray-700 hover:bg-green-600 text-white py-2 sm:py-3 px-2 sm:px-4 rounded-lg transition-all duration-200 border border-gray-600 hover:border-green-500 text-sm sm:text-base font-medium shadow-sm"
               data-days={day}
             >
               {day} día{day > 1 ? 's' : ''}
             </button>
           ))}
         </div>
-        <p class="text-gray-400 text-xs mt-2">Selecciona la cantidad de días que necesitas el espacio</p>
+        <p class="text-gray-400 text-xs sm:text-sm mt-2">Selecciona la cantidad de días que necesitas el espacio</p>
       </div>
-      
-      <!-- Precios y combos -->
-      <div class="mb-6">
-        <h4 class="text-lg font-semibold text-gray-200 mb-3">Precios</h4>
-        <div class="space-y-2">
-          <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
-            <span class="text-gray-300">1 día</span>
-            <span class="text-green-400 font-bold">$50</span>
-          </div>
-          <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
-            <span class="text-gray-300">2 días</span>
-            <span class="text-green-400 font-bold">$90 <span class="text-xs text-gray-400">(Ahorra $10)</span></span>
-          </div>
-          <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
-            <span class="text-gray-300">3 días</span>
-            <span class="text-green-400 font-bold">$120 <span class="text-xs text-gray-400">(Ahorra $30)</span></span>
-          </div>
-          <div class="flex justify-between items-center p-3 bg-gray-700 rounded-lg">
-            <span class="text-gray-300">4 días</span>
-            <span class="text-green-400 font-bold">$150 <span class="text-xs text-gray-400">(Ahorra $50)</span></span>
-          </div>
-          <div class="flex justify-between items-center p-3 bg-gradient-to-r from-blue-700 to-blue-600 rounded-lg border border-blue-500">
-            <span class="text-white font-semibold">5 días (Combo Semanal)</span>
-            <span class="text-yellow-300 font-bold">$175 <span class="text-xs text-blue-200">(Ahorra $75)</span></span>
-          </div>
+
+      <!-- Precios -->
+      <div>
+        <h4 class="text-base sm:text-lg font-semibold text-gray-200 mb-3">Precios</h4>
+        <div class="space-y-2 sm:space-y-3">
+          {[ 
+            { d:1, t:"₲200.000" }, 
+            { d:2, t:"₲390.000", s:"(Ahorra ₲10.000)" },
+            { d:3, t:"₲560.000", s:"(Ahorra ₲40.000)" },
+            { d:4, t:"₲750.000", s:"(Ahorra ₲50.000)" },
+            { d:5, t:"₲900.000", s:"(Ahorra ₲100.000)", special:true }
+          ].map(price => (
+            <div class={`flex justify-between items-center p-2 sm:p-3 rounded-lg transition-all ${price.special ? "bg-gradient-to-r from-green-700 to-green-600 border border-green-500" : "bg-gray-800 hover:bg-gray-700"}`}>
+              <span class={`text-gray-200 ${price.special ? "font-semibold text-white" : ""}`}>{price.d} día{price.d>1?'s':''} {price.special ? '(Super Combo)' : ''}</span>
+              <span class={`font-bold ${price.special ? "text-yellow-300" : "text-green-400"}`}>{price.t} {price.s && <span class="text-xs text-gray-400"> {price.s}</span>}</span>
+            </div>
+          ))}
         </div>
       </div>
-      
-      <!-- Total seleccionado -->
-      <div class="mb-6 p-4 bg-gradient-to-r from-green-700 to-green-600 rounded-lg border border-green-500">
+
+      <!-- Total -->
+      <div class="p-3 sm:p-4 bg-gradient-to-r from-green-700 to-green-600 rounded-lg border border-green-500 shadow-lg">
         <div class="flex justify-between items-center">
-          <span class="text-white font-semibold">Total seleccionado:</span>
-          <span id="totalPrice" class="text-yellow-300 font-bold text-lg">$0</span>
+          <span class="text-white font-semibold text-sm sm:text-lg">Total seleccionado:</span>
+          <span id="totalPrice" class="text-white font-bold text-lg sm:text-xl">₲0</span>
         </div>
-        <p id="selectedDaysText" class="text-green-100 text-sm mt-1">Selecciona los días para ver el precio</p>
       </div>
-      
-      <!-- Botón de reservar -->
+    </div>
+
+    <!-- Botón flotante en móviles -->
+    <div class="p-4 bg-gray-900 border-t border-gray-700">
       <button 
         id="reserveBtn" 
-        class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+        class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 sm:py-4 px-3 sm:px-4 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-lg text-sm sm:text-base"
         disabled
       >
+        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M21 11.5a8.38 8.38 0 01-.9 3.8l-1.4-1.4a1 1 0 00-1.4 0l-2 2a1 1 0 000 1.4l1.4 1.4a8.38 8.38 0 01-3.8.9A8.5 8.5 0 113 12a8.5 8.5 0 0118 0z"/>
+        </svg>
         Reservar por WhatsApp
       </button>
     </div>
   </div>
 </div>
 
+<style>
+#reservationModal .modal-content {
+  animation: showModal 0.3s ease-out forwards;
+}
+@keyframes showModal {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+</style>
+
+
 <script>
   let selectedSpace = null;
   let selectedDays = null;
   
   const prices = {
-    1: 50,
-    2: 90,
-    3: 120,
-    4: 150,
-    5: 175
-  };
+    1: 200.000,
+    2: 390.000,
+    3: 560.000,
+    4: 750.000,
+    5: 900.000  };
   
   const locations = {
     1: "Fila superior - Izquierda", 2: "Fila superior - Centro izquierda", 3: "Fila superior - Centro",
@@ -175,7 +174,7 @@
     // Botón de reservar
     reserveBtn.addEventListener('click', () => {
       if (selectedSpace && selectedDays) {
-        const message = `Hola! Quiero reservar el espacio de estacionamiento #${selectedSpace} por ${selectedDays} día${selectedDays > 1 ? 's' : ''} (Total: $${prices[selectedDays]})`;
+        const message = `Hola! Quiero reservar el espacio de estacionamiento número #${selectedSpace} por ${selectedDays} días${selectedDays > 1 ? 's' : ''} (Total: $${prices[selectedDays]})`;
         const whatsappUrl = `https://wa.me/+595982473466?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
       }
